@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+
+# Local databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Generated simulator runs
+runs/
+
+# Generated reports
+
+# OS files
+.DS_Store
+Thumbs.db
+data/*.json
