@@ -18,26 +18,15 @@ Create and activate the environment on Windows Git Bash:
 python -m venv .venv
 source .venv/Scripts/activate
 pip install -r requirements.txt
+```
+
+On Linux:
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-
-## Run the controller
-
-Start the simulator in one terminal:
-
-```bash
-python -m sim serve --scenario scenarios/public_01_dev.yaml --run-dir runs/mine01 --force
-```
-
-In another terminal:
-
-```bash
-./run.sh http://127.0.0.1:8700
-```
-
-The controller communicates with the simulator through its HTTP API.
 
 ## Implemented capabilities
 
