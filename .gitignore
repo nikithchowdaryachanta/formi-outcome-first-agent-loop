@@ -19,3 +19,12 @@ runs/
 .DS_Store
 Thumbs.db
 data/*.json
+
+# Local controller backups
+controller_backup.py
+controller_precontinuous.py
+data/*.log
+
+# Local backup files
+controller_before_incident_detection.py
+performance_monitor_before_anomaly.py

@@ -1,14 +1,15 @@
 
 import sqlite3
 import json
+import os
 import httpx
 from pathlib import Path
 from collections import defaultdict
 from datetime import datetime, timezone
 
 BASE_URL = "http://127.0.0.1:8700"
-DB_PATH = "data/formi_events.db"
-OUTPUT_PATH = "data/decision_report.json"
+DB_PATH = os.environ.get("FORMI_DB_PATH", "data/formi_events.db")
+OUTPUT_PATH = os.environ.get("FORMI_REPORT_PATH", "data/decision_report.json")
 
 
 def load_call_events():
@@ -241,7 +242,7 @@ def analyse_workflow(workflow, config_data, all_events):
     }
 
 
-def main():
+def main(base_url=BASE_URL):
 
     print("=" * 70)
     print("FORMI DECISION AND GOVERNANCE ENGINE")
@@ -252,7 +253,7 @@ def main():
     print(f"\nLoaded {len(events):,} historical call events.")
 
     with httpx.Client(
-        base_url=BASE_URL,
+        base_url=base_url,
         timeout=30
     ) as client:
 

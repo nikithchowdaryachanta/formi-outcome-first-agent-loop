@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Replace this with your controller. Contract: ./run.sh <SIM_URL> runs until the scenario finishes.
 set -euo pipefail
-SIM_URL="${1:?usage: ./run.sh <SIM_URL>}"
-echo "No controller yet — running the naive example against $SIM_URL" >&2
-exec python examples/naive_controller.py --url "$SIM_URL"
+
+SIM_URL="${1:?Usage: ./run.sh <SIM_URL>}"
+
+echo "Starting Formi autonomous controller..."
+exec python controller.py "$SIM_URL"
