@@ -1,777 +1,359 @@
-\# Formi – Outcome-First Agent Loop
+# Formi – Outcome-First Agent Loop
 
+**An autonomous workflow monitoring and decision system built with Python and SQLite.**
 
+Formi collects workflow events, monitors operational performance, identifies anomalies, evaluates configuration changes, and maintains an auditable record of system activity.
 
-An autonomous workflow monitoring and decision system built with Python and SQLite. Formi collects workflow events, monitors operational performance, identifies anomalies, evaluates configuration changes, and maintains an auditable record of system activity.
+The system follows an outcome-first approach: decisions are evaluated using measurable workflow performance rather than activity alone.
 
+---
 
+## Overview
 
-The system is designed around an outcome-first approach: decisions should be based on measurable workflow performance rather than isolated activity or assumptions.
+Formi is designed to monitor and analyze automated workflows by connecting event processing, performance measurement, operational monitoring, and evidence-based decision evaluation.
 
+It focuses on three key performance indicators:
 
+| Metric | Description |
+|---|---|
+| **Pickup Rate** | Percentage of dial attempts that successfully connect. |
+| **Engagement Rate** | Percentage of connected people who remain engaged until the interaction concludes. |
+| **Outcome Rate** | Percentage of uploaded leads that reach a concluded outcome. |
 
-\---
+Keeping these metrics separate helps identify whether a workflow is experiencing connection problems, engagement problems, or issues with its overall outcomes.
 
+## System Architecture
 
-
-\## 1. Project Overview
-
-
-
-Formi provides a structured way to observe and analyze automated workflows.
-
-
-
-Instead of looking only at the number of calls or events processed, it separates performance into three important metrics:
-
-
-
-\- \*\*Pickup Rate:\*\* Measures how many dial attempts successfully connect.
-
-\- \*\*Engagement Rate:\*\* Measures how many connected people remain engaged until the interaction reaches its conclusion.
-
-\- \*\*Outcome Rate:\*\* Measures how many uploaded leads reach a concluded outcome.
-
-
-
-These metrics help distinguish between connection problems, engagement problems, and overall workflow performance.
-
-
-
-The system collects operational data, stores it for analysis, monitors changes, and evaluates whether a configuration adjustment is supported by measurable evidence.
-
-
-
-\## 2. System Architecture
-
-
-
-The application is organized into separate components, with each component responsible for a specific part of the workflow.
-
-
+The application uses modular components that work together to collect, process, analyze, and record workflow activity.
 
 ```text
-
-&#x20;            Workflow Simulator
-
-&#x20;                    |
-
-&#x20;                    | HTTP API
-
-&#x20;                    v
-
-&#x20;              Controller
-
-&#x20;                    |
-
-&#x20;                    v
-
-&#x20;              Event Ingestion
-
-&#x20;                    |
-
-&#x20;                    v
-
-&#x20;               SQLite DB
-
-&#x20;                    |
-
-&#x20;         +----------+----------+
-
-&#x20;         |                     |
-
-&#x20;         v                     v
-
-&#x20;  Performance Monitor    Decision Engine
-
-&#x20;         |                     |
-
-&#x20;         v                     v
-
-&#x20;  Operational Signals   Configuration Analysis
-
-&#x20;         |                     |
-
-&#x20;         +----------+----------+
-
-&#x20;                    |
-
-&#x20;                    v
-
-&#x20;             Audit Records
-
+                  Workflow Simulator
+                          |
+                       HTTP API
+                          |
+                          v
+                      Controller
+                          |
+                          v
+                    Event Ingestion
+                          |
+                          v
+                      SQLite DB
+                          |
+                 +--------+--------+
+                 |                 |
+                 v                 v
+          Performance Monitor  Decision Engine
+                 |                 |
+                 v                 v
+          Operational Signals  Configuration Analysis
+                 |                 |
+                 +--------+--------+
+                          |
+                          v
+                     Audit Records
 ```
 
+### Core Components
 
-
-\### Component responsibilities
-
-
-
-| Component | Responsibility |
-
+| Component | Description |
 |---|---|
+| `controller.py` | Main entry point that coordinates simulator communication and workflow execution. |
+| `event_ingest.py` | Retrieves, processes, and stores incoming workflow events. |
+| `decision_engine.py` | Evaluates workflow performance and configuration decisions using available evidence. |
+| `performance_monitor.py` | Monitors performance indicators and operational signals, including caller-ID anomalies and supervisor configuration changes. |
+| SQLite | Stores workflow events, processing checkpoints, and audit records. |
+| `run.sh` | Starts the application controller. |
 
-| `controller.py` | Acts as the main entry point and coordinates simulator communication and workflow execution. |
+## How the System Works
 
-| `event\_ingest.py` | Retrieves simulator events, processes incoming data, and stores events in the database. |
+**1. Simulator Communication**
 
-| `decision\_engine.py` | Evaluates workflow performance and considers configuration decisions using available evidence. |
+The controller connects to the workflow simulator through its HTTP API to retrieve workflow-related information and coordinate processing.
 
-| `performance\_monitor.py` | Monitors workflow metrics and identifies operational signals such as caller-ID anomalies and supervisor configuration changes. |
+**2. Event Ingestion**
 
-| SQLite database | Maintains event data, processing checkpoints, and audit records. |
+The ingestion component retrieves incoming events and prepares them for processing and storage.
 
-| `run.sh` | Provides a convenient way to start the controller. |
+**3. Persistent Storage**
 
+Events and processing information are stored in SQLite. Checkpoints and duplicate protection help maintain processing continuity.
 
+**4. Performance Monitoring**
 
-This separation makes the application easier to maintain, test, and extend.
+The monitoring component examines workflow activity and tracks pickup, engagement, and outcome metrics.
 
+**5. Decision Evaluation**
 
+The decision engine evaluates available performance evidence and considers whether configuration changes are supported by observed results.
 
-\## 3. End-to-End Workflow
+**6. Audit and Traceability**
 
+Relevant observations and decision activity are recorded to provide a history that can be inspected later.
 
+---
 
-The system follows a sequence of connected processing stages.
+## Performance Metrics
 
+Formi evaluates workflow performance using three separate measurements.
 
+| Metric | Calculation |
+|---|---|
+| **Pickup Rate** | Connected Dials / Total Dials |
+| **Engagement Rate** | People Engaged to Conclusion / People Who Picked Up |
+| **Outcome Rate** | Concluded Leads / Uploaded Leads |
 
-\### Step 1: Connect to the simulator
+These measurements provide different perspectives on workflow effectiveness.
 
+For example, a workflow may have a reasonable pickup rate but a lower engagement rate. This indicates that successfully connecting with people and keeping them engaged are separate challenges.
 
+Similarly, an improvement in engagement does not automatically prove an improvement in the overall outcome rate.
 
-The controller communicates with the workflow simulator through its HTTP API.
+---
 
+## Scenario Results
 
+### Public 01 – Workflow Performance
 
-It uses the simulator endpoint to retrieve workflow-related information and coordinate processing.
+This scenario focused on event processing, workflow performance measurement, and configuration evaluation.
 
-
-
-\### Step 2: Collect workflow events
-
-
-
-The event ingestion component retrieves events and prepares them for storage.
-
-
-
-Events are processed incrementally so the system can continue from previously recorded progress.
-
-
-
-\### Step 3: Persist data
-
-
-
-SQLite is used to store incoming events and related processing information.
-
-
-
-The persistence layer supports:
-
-
-
-\- Event storage.
-
-\- Processing checkpoints.
-
-\- Duplicate protection.
-
-\- Audit record storage.
-
-
-
-This allows the application to maintain a record of previously processed data.
-
-
-
-\### Step 4: Monitor performance
-
-
-
-The performance monitoring component examines operational information and workflow activity.
-
-
-
-It focuses on identifying changes in important performance indicators and operational signals.
-
-
-
-\### Step 5: Analyze outcomes
-
-
-
-The decision engine evaluates available performance evidence.
-
-
-
-It considers whether observed changes indicate a potential improvement or whether additional evidence is needed before a configuration decision is made.
-
-
-
-\### Step 6: Maintain traceability
-
-
-
-Relevant observations and decision activity are recorded for later inspection.
-
-
-
-This makes it possible to understand what the system observed and which actions or changes were recorded.
-
-
-
-\---
-
-
-
-\## 4. Performance Metrics
-
-
-
-Formi separates workflow performance into three metrics.
-
-
-
-| Metric | Meaning | Calculation |
-
-|---|---|---|
-
-| Pickup Rate | Percentage of dial attempts that connect | Connected dials / Total dials |
-
-| Engagement Rate | Percentage of connected people who stay until the interaction concludes | People engaged to conclusion / People who picked up |
-
-| Outcome Rate | Percentage of uploaded leads that reach a concluded outcome | Concluded leads / Uploaded leads |
-
-
-
-These metrics should be interpreted separately.
-
-
-
-For example, a workflow can have a reasonable pickup rate but a lower engagement rate. This indicates that connecting with people and keeping them engaged are different problems.
-
-
-
-Similarly, an improvement in engagement does not automatically establish an improvement in the overall outcome rate.
-
-
-
-\---
-
-
-
-\## 5. Scenario Results
-
-
-
-\### Public 01 – Workflow Performance
-
-
-
-<details>
-
-</details>
-
-
-
-The first scenario focused on workflow performance, event processing, and configuration evaluation.
-
-
-
-\*\*Recorded results:\*\*
-
-
+**Execution Results**
 
 | Measurement | Result |
-
 |---|---:|
+| Ticks Processed | 717 |
+| Events Stored | 297,026 |
+| Baseline Event Count | 297,024 |
+| Overall Conclusion Rate | 0.379 |
+| Conclusion Rate Change | +2.9% |
+| Pickup Rate | 0.249 |
+| Pickup Rate Change | +0.6% |
+| Engagement Rate | 0.538 |
+| Engagement Rate Change | +1.6% |
+| Engagement Gap Captured | 3% |
+| Credits Used | 13 |
 
-| Ticks processed | 717 |
+**Configuration Observation**
 
-| Events stored | 297,026 |
+One approved `nw_kyc` prompt version change was recorded. This change was associated with an engagement increase of **0.030**, equivalent to 3 percentage points.
 
-| Baseline event count | 297,024 |
+The observed result provides evidence of an improvement in that workflow, but it does not establish that the same change will produce similar results across other workflows.
 
-| Overall conclusion rate | 0.379 |
+**Key Observations**
 
-| Conclusion rate change | +2.9% |
+- Successfully processed and stored the scenario events.
+- Measured pickup, engagement, and outcome performance separately.
+- Recorded an approved prompt version change.
+- Observed improvements against the reported baseline.
 
-| Pickup rate | 0.249 |
+Detailed results: [`reports/public_01_dev.md`](reports/public_01_dev.md)
 
-| Pickup rate change | +0.6% |
+### Public 02 – Operational Monitoring
 
-| Engagement rate | 0.538 |
+This scenario focused on monitoring operational activity and identifying unusual changes.
 
-| Engagement rate change | +1.6% |
-
-| Engagement gap captured | 3% |
-
-| Credits used | 13 |
-
-
-
-\*\*Configuration observation\*\*
-
-
-
-One approved `nw\_kyc` prompt version change was recorded. The change was associated with an engagement increase of 0.030, equivalent to 3 percentage points.
-
-
-
-The result provides evidence of an observed improvement in that workflow. It should not be interpreted as proof that the same change will improve every workflow.
-
-
-
-\*\*Key takeaways\*\*
-
-
-
-\- The system successfully processed and stored the scenario events.
-
-\- Workflow performance was measured using separate metrics.
-
-\- An approved prompt version change was recorded.
-
-\- The observed results showed improvements over the reported baseline.
-
-
-
-Detailed results: \[`reports/public\_01\_dev.md`](reports/public\_01\_dev.md)
-
-
-
-\### Public 02 – Operational Monitoring
-
-
-
-The second scenario focused on operational monitoring and the identification of unusual activity.
-
-
-
-\*\*Original scenario results:\*\*
-
-
+**Original Execution Results**
 
 | Measurement | Result |
-
 |---|---:|
+| Ticks Processed | 960 |
+| Events Stored | 137,032 |
+| Audit Records | 1,921 |
+| Performance Lift | None Recorded |
+| Configuration Changes | None Recorded |
 
-| Ticks processed | 960 |
+**Separate Detector Verification**
 
-| Events stored | 137,032 |
-
-| Audit records | 1,921 |
-
-| Performance lift | None recorded |
-
-| Configuration changes | None recorded |
-
-
-
-\*\*Separate detector verification\*\*
-
-
-
-A separate verification run tested the monitoring capabilities.
-
-
+A separate verification run tested the operational monitoring capabilities.
 
 | Measurement | Result |
-
 |---|---:|
+| Caller-ID Anomalies Identified | 2 |
+| Supervisor Configuration Changes Identified | 2 |
+| Audit Records | 1,925 |
 
-| Caller-ID anomalies identified | 2 |
+The detector verification was separate from the original scenario execution. It demonstrated detection and observation, not automated remediation.
 
-| Supervisor configuration changes identified | 2 |
+**Key Observations**
 
-| Audit records | 1,925 |
+- Recorded operational activity.
+- Identified two caller-ID anomalies during detector verification.
+- Observed two supervisor configuration changes.
+- Maintained audit records for traceability.
 
+Detailed results: [`reports/public_02_incidents.md`](reports/public_02_incidents.md)
 
+### Public 03 – Historical Load Processing
 
-The detector verification is separate from the original scenario run. The results demonstrate detection and observation, not automated remediation.
+This scenario focused on processing a larger historical call dataset and generating workflow summaries.
 
-
-
-\*\*Key takeaways\*\*
-
-
-
-\- The system recorded operational activity.
-
-\- Caller-ID anomalies were identified during detector verification.
-
-\- Supervisor configuration changes were observed.
-
-\- Audit records provided traceability for the detected activity.
-
-
-
-Detailed results: \[`reports/public\_02\_incidents.md`](reports/public\_02\_incidents.md)
-
-
-
-\### Public 03 – Historical Load Processing
-
-
-
-The third scenario focused on processing a larger historical dataset.
-
-
-
-\*\*Recorded results:\*\*
-
-
+**Execution Results**
 
 | Measurement | Result |
-
 |---|---:|
+| Historical Call Events Loaded | 3,240,000 |
+| Workflows in Scenario | 12 |
+| Workflow Summaries Generated | 4 |
+| Calls per Summary | 270,000 |
+| Calls Represented in Summaries | 1,080,000 |
 
-| Historical call events loaded | 3,240,000 |
-
-| Workflows in scenario | 12 |
-
-| Workflow summaries generated | 4 |
-
-| Calls reported per summary | 270,000 |
-
-| Total calls represented in summaries | 1,080,000 |
-
-
-
-The process loaded 3.24 million historical call events and generated summaries for four workflows.
-
-
+The system loaded 3.24 million historical call events and generated summaries for four workflows.
 
 However, the connection timed out before all twelve workflows were validated.
 
+**Key Observations**
 
+- Exercised historical event loading at a larger data volume.
+- Generated four workflow summaries.
+- Did not establish successful completion across all twelve workflows.
+- Full-scale throughput and end-to-end performance remain unverified.
 
-\*\*Key takeaways\*\*
+Detailed results: [`reports/public_03_load.md`](reports/public_03_load.md)
 
+---
 
+## Technology Stack
 
-\- Large-scale historical event loading was exercised.
-
-\- Four workflow summaries were generated.
-
-\- The run did not establish successful completion across all twelve workflows.
-
-\- Full-scale throughput and end-to-end performance remain unverified.
-
-
-
-Detailed results: \[`reports/public\_03\_load.md`](reports/public\_03\_load.md)
-
-
-
-\---
-
-
-
-\## 6. Technology Stack
-
-
-
-| Technology | Usage |
-
+| Technology | Purpose |
 |---|---|
+| **Python** | Application logic and workflow processing. |
+| **SQLite** | Persistent storage for events, checkpoints, and audit records. |
+| **HTTP API** | Communication with the workflow simulator. |
+| **Bash** | Application startup and execution. |
+| **Pytest** | Automated testing. |
 
-| Python | Application logic and workflow processing |
+---
 
-| SQLite | Event persistence, checkpoints, and audit records |
+## Installation and Setup
 
-| HTTP API | Communication with the simulator |
+### Prerequisites
 
-| Bash | Application startup and execution |
+- Python 3.13 or a compatible version.
+- Git.
+- Bash-compatible terminal.
+- Project dependencies and the included workflow simulator.
 
-| Pytest | Automated testing |
-
-
-
-The application uses a lightweight local database and modular Python components to keep the system straightforward to run and maintain.
-
-
-
-\---
-
-
-
-\## 7. Installation and Setup
-
-
-
-\### Prerequisites
-
-
-
-\- Python 3.13 or compatible Python version.
-
-\- Git.
-
-\- Bash-compatible terminal.
-
-\- Required project dependencies.
-
-\- Workflow simulator included in the project environment.
-
-
-
-\### Step 1: Clone the repository
-
-
+### 1. Clone the Repository
 
 ```bash
-
 git clone https://github.com/nikithchowdaryachanta/formi-outcome-first-agent-loop.git
 
 cd formi-outcome-first-agent-loop
-
 ```
 
-
-
-\### Step 2: Create a virtual environment
-
-
+### 2. Create a Virtual Environment
 
 ```bash
-
 python -m venv .venv
-
 ```
 
-
-
-Activate it in Git Bash on Windows:
-
-
+Activate it in Windows Git Bash:
 
 ```bash
-
 source .venv/Scripts/activate
-
 ```
 
-
-
-\### Step 3: Install dependencies
-
-
+### 3. Install Dependencies
 
 ```bash
-
 pip install -r requirements.txt
-
 ```
 
+### 4. Start the Workflow Simulator
 
-
-\### Step 4: Start the simulator
-
-
-
-Run the simulator in the first terminal:
-
-
+Run this command in the first terminal:
 
 ```bash
-
-python -m sim serve \\
-
-&#x20; --scenario scenarios/public\_01\_dev.yaml \\
-
-&#x20; --run-dir runs/mine01
-
+python -m sim serve \
+  --scenario scenarios/public_01_dev.yaml \
+  --run-dir runs/mine01
 ```
 
-
-
-\### Step 5: Start the controller
-
-
+### 5. Start the Controller
 
 Open a second terminal, activate the virtual environment, and execute:
 
-
-
 ```bash
-
 ./run.sh http://127.0.0.1:8700
-
 ```
 
+The controller will connect to the simulator through the configured local endpoint.
 
+---
 
-The controller will connect to the simulator using the configured local endpoint.
+## Testing
 
-
-
-\---
-
-
-
-\## 8. Running Tests
-
-
-
-The project uses Pytest for automated testing.
-
-
+The project uses Pytest to validate implemented functionality.
 
 Run the test suite:
 
-
-
 ```bash
-
 python -m pytest -q tests
-
 ```
 
-
-
-\*\*Latest verified result:\*\*
-
-
+**Latest Verified Test Result**
 
 ```text
-
-......                                                                   \[100%]
-
 6 passed in 20.70s
-
 ```
-
-
 
 All six tests passed in the latest recorded test run.
 
+This confirms the tested code paths but does not establish full-scale performance or completion of every scenario.
 
+---
 
-The test result verifies the tested code paths; it does not establish full-scale performance or completion of every scenario.
-
-
-
-\---
-
-
-
-\## 9. Current Implementation Status
-
-
+## Implementation Status
 
 | Capability | Status |
-
 |---|---|
+| HTTP Simulator Communication | Implemented |
+| Event Ingestion | Implemented |
+| SQLite Persistence | Implemented |
+| Processing Checkpoints | Implemented |
+| Duplicate Protection | Implemented |
+| Workflow Performance Analysis | Implemented |
+| Supervisor Configuration Change Observation | Implemented |
+| Caller-ID Anomaly Detection | Partially Implemented |
+| Governance-Aware Decision Handling | Partially Implemented |
+| Shared-Cohort Experimentation | Not Completed |
+| Generalized Performance Decay Detection | Not Completed |
+| Automated Rollback | Not Completed |
+| Automated Caller-ID Remediation | Not Completed |
+| Full Supervisor Dashboard | Not Implemented |
+| Complete Twelve-Workflow Load Validation | Not Completed |
 
-| HTTP simulator communication | Implemented |
+## Limitations and Future Improvements
 
-| Event ingestion | Implemented |
+The current implementation provides a foundation for workflow monitoring, event processing, performance analysis, and evidence-based decision evaluation.
 
-| SQLite persistence | Implemented |
+Further development could focus on:
 
-| Processing checkpoints | Implemented |
+1. **Advanced anomaly detection:** Expand detection coverage for caller-ID and other operational anomalies.
+2. **Decision governance:** Introduce more complete evidence requirements before approving configuration changes.
+3. **Performance decay detection:** Identify sustained decreases in workflow performance.
+4. **Automated rollback:** Add controlled configuration rollback when required.
+5. **Experimentation:** Implement shared-cohort experimentation and improved workflow variant comparisons.
+6. **Operational dashboard:** Provide a centralized view of workflow health and configuration activity.
+7. **Load validation:** Complete processing and performance validation across all twelve workflows.
 
-| Duplicate protection | Implemented |
+---
 
-| Workflow performance analysis | Implemented |
+## Project Documentation
 
-| Supervisor configuration change observation | Implemented |
+Additional technical details and execution results:
 
-| Caller-ID anomaly detection | Partially implemented |
+- [Public 01 – Workflow Performance](reports/public_01_dev.md)
+- [Public 02 – Operational Monitoring](reports/public_02_incidents.md)
+- [Public 03 – Historical Load Processing](reports/public_03_load.md)
+- [Additional Project Documentation](README_PROJECT.md)
 
-| Governance-aware decision handling | Partially implemented |
+---
 
-| Shared-cohort experimentation | Not completed |
+## Summary
 
-| Generalized performance decay detection | Not completed |
+Formi brings together workflow event ingestion, persistent storage, performance monitoring, operational signal detection, and evidence-based decision evaluation.
 
-| Automated rollback | Not completed |
+The recorded results demonstrate event processing, metric tracking, operational monitoring, and audit recording across three scenarios. The documented limitations also identify areas requiring further development, including experimentation, automated remediation, rollback, and complete load validation.
 
-| Automated caller-ID remediation | Not completed |
-
-| Full supervisor dashboard | Not implemented |
-
-| Complete twelve-workflow load validation | Not completed |
-
-
-
-\---
-
-
-
-\## 10. Known Limitations and Future Improvements
-
-
-
-The current implementation provides a foundation for workflow monitoring, event processing, and evidence-based decision evaluation. Some capabilities still require additional development.
-
-
-
-Potential improvements include:
-
-
-
-1\. \*\*Expand anomaly detection:\*\* Improve detection coverage for caller-ID and other operational anomalies.
-
-2\. \*\*Strengthen decision governance:\*\* Add more complete evidence requirements before configuration changes are approved.
-
-3\. \*\*Add performance decay detection:\*\* Identify sustained decreases in workflow performance.
-
-4\. \*\*Implement rollback support:\*\* Provide a controlled way to reverse configuration changes when required.
-
-5\. \*\*Improve experimentation:\*\* Introduce shared-cohort experimentation and more complete comparison of workflow variants.
-
-6\. \*\*Expand operational visibility:\*\* Develop a dashboard for monitoring workflow health and configuration activity.
-
-7\. \*\*Complete load validation:\*\* Verify processing across all twelve workflows and measure end-to-end performance.
-
-
-
-These improvements would make the system more comprehensive and reliable as its monitoring and decision-making capabilities expand.
-
-
-
-\---
-
-
-
-\## 11. Project Documentation
-
-
-
-Additional technical details and scenario observations are available in:
-
-
-
-\- \[`reports/public\_01\_dev.md`](reports/public\_01\_dev.md) – Workflow performance and configuration observations.
-
-\- \[`reports/public\_02\_incidents.md`](reports/public\_02\_incidents.md) – Operational monitoring and anomaly detection.
-
-\- \[`reports/public\_03\_load.md`](reports/public\_03\_load.md) – Historical event loading and workflow summaries.
-
-\- \[`README\_PROJECT.md`](README\_PROJECT.md) – Additional project information.
-
-
-
-\---
-
-
-
-\## Project Summary
-
-
-
-Formi combines event ingestion, persistent storage, workflow performance monitoring, operational signal detection, and evidence-based decision evaluation.
-
-
-
-The implementation demonstrates event processing, metric tracking, operational monitoring, and audit recording across three scenarios. It also documents the areas that need further development, including complete experimentation, automated remediation, rollback, and full-scale load validation.
-
-
-
-\*\*Built with Python, SQLite, HTTP APIs, Bash, and Pytest.\*\*
+**Built with Python, SQLite, HTTP APIs, Bash, and Pytest.**
