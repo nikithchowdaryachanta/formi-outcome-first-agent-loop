@@ -11,7 +11,16 @@
 - Public_01 achieved +2.9% overall conclusion-rate improvement and +1.6% engagement improvement against baseline.
 - Public_02 exposed caller-ID and supervisor-edit incidents; additional detectors recorded two caller-ID anomalies and two supervisor changes.
 - Demonstrated controlled controller stop and restart with zero duplicate event IDs and a valid SQLite database.
+- Public_03 processed a captured analysis set of 3,240,000 historical call events, but ended with a connection timeout; the requested throughput target was not met.
 - Prioritised reliability, auditability and governance; full cohort experimentation, decay rollback and a supervisor dashboard remain incomplete.
+
+## Evidence and project navigation
+
+- [Project guide and setup instructions](README_PROJECT.md)
+- [Public_01 grade report](reports/public_01_dev.md)
+- [Public_02 incident report and separate detector verification](reports/public_02_incidents.md)
+- [Public_03 captured load-test output and limitations](reports/public_03_load.md)
+- [Simulator API and scenario contract](docs/SIMULATOR.md)
 
 ## 1. Assumptions
 
