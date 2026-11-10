@@ -291,16 +291,19 @@ The caller-ID detector was also checked for duplicate suppression: the first det
 
 ## 8. Public_03 load test
 
-Public_03 is intended to represent a substantially larger workload. The load test and its final measurements must be recorded here after the run is completed and verified.
+Public_03 was executed and reported scenario completion. The final decision analysis loaded 3,240,000 historical call events.
 
-Measurements to capture:
-- Total simulated ticks and simulated duration.
-- Wall-clock runtime.
-- Events ingested and event-ingestion throughput.
-- Number of calls analysed.
-- SQLite database size.
-- Peak memory, if measured.
-- Whether the run completed without manual intervention.
-- Any errors, bottlenecks or missed operational targets.
+The captured final output displayed the following four workflow summaries, each with 270,000 calls:
 
-No unverified throughput, memory or hardware benchmark figures are claimed in this submission.
+| Workflow | Calls | Pickup rate | Engagement rate | Outcome rate | Hallucinations |
+|---|---:|---:|---:|---:|---:|
+| nort_renewal_0 | 270,000 | 26.34% | 54.77% | 14.43% | 1,033 |
+| nort_kyc_1 | 270,000 | 21.32% | 59.53% | 12.69% | 840 |
+| nort_cancel_2 | 270,000 | 24.25% | 49.88% | 12.10% | 939 |
+| kest_renewal_0 | 270,000 | 26.35% | 54.23% | 14.29% | 1,068 |
+
+All four displayed workflows remained on configuration version 1. Only P1 prompt evidence was displayed. No winner was selected and no configuration was modified.
+
+**Execution limitation:** The terminal reported `CONNECTION ERROR: timed out` after the final decision analysis. The captured output does not establish complete results for all workflows or a verified wall-clock throughput benchmark. The requested target of one simulated day in under 10 wall-clock minutes was not achieved. Public_03 therefore demonstrates substantial event-analysis workload but also exposes a throughput and connection-stability limitation that requires further optimisation.
+
+Detailed captured results are documented in `reports/public_03_load.md`.
