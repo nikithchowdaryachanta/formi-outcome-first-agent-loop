@@ -2,7 +2,7 @@
 
 **Name:** Nikith Achanta
 **Date:** 9 November 2026
-**Hours actually spent:** Approximately 20 hours (as of 9 November 2026)
+**Hours actually spent:** 30 hrs
 **Language / storage:** Python 3.13 / SQLite
 
 ## 0. TL;DR
