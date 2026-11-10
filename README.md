@@ -22,6 +22,8 @@ It focuses on three key performance indicators:
 
 Keeping these metrics separate helps identify whether a workflow is experiencing connection problems, engagement problems, or issues with its overall outcomes.
 
+---
+
 ## System Architecture
 
 The application uses modular components that work together to collect, process, analyze, and record workflow activity.
@@ -29,7 +31,7 @@ The application uses modular components that work together to collect, process, 
 ```text
                   Workflow Simulator
                           |
-                       HTTP API
+                        HTTP API
                           |
                           v
                       Controller
@@ -65,29 +67,31 @@ The application uses modular components that work together to collect, process, 
 | SQLite | Stores workflow events, processing checkpoints, and audit records. |
 | `run.sh` | Starts the application controller. |
 
+---
+
 ## How the System Works
 
-**1. Simulator Communication**
+### 1. Simulator Communication
 
 The controller connects to the workflow simulator through its HTTP API to retrieve workflow-related information and coordinate processing.
 
-**2. Event Ingestion**
+### 2. Event Ingestion
 
 The ingestion component retrieves incoming events and prepares them for processing and storage.
 
-**3. Persistent Storage**
+### 3. Persistent Storage
 
 Events and processing information are stored in SQLite. Checkpoints and duplicate protection help maintain processing continuity.
 
-**4. Performance Monitoring**
+### 4. Performance Monitoring
 
 The monitoring component examines workflow activity and tracks pickup, engagement, and outcome metrics.
 
-**5. Decision Evaluation**
+### 5. Decision Evaluation
 
 The decision engine evaluates available performance evidence and considers whether configuration changes are supported by observed results.
 
-**6. Audit and Traceability**
+### 6. Audit and Traceability
 
 Relevant observations and decision activity are recorded to provide a history that can be inspected later.
 
@@ -146,7 +150,7 @@ The observed result provides evidence of an improvement in that workflow, but it
 - Recorded an approved prompt version change.
 - Observed improvements against the reported baseline.
 
-Detailed results: [`reports/public_01_dev.md`](reports/public_01_dev.md)
+Detailed results: [Public 01 – Workflow Performance](reports/public_01_dev.md)
 
 ### Public 02 – Operational Monitoring
 
@@ -181,7 +185,7 @@ The detector verification was separate from the original scenario execution. It 
 - Observed two supervisor configuration changes.
 - Maintained audit records for traceability.
 
-Detailed results: [`reports/public_02_incidents.md`](reports/public_02_incidents.md)
+Detailed results: [Public 02 – Operational Monitoring](reports/public_02_incidents.md)
 
 ### Public 03 – Historical Load Processing
 
@@ -208,7 +212,7 @@ However, the connection timed out before all twelve workflows were validated.
 - Did not establish successful completion across all twelve workflows.
 - Full-scale throughput and end-to-end performance remain unverified.
 
-Detailed results: [`reports/public_03_load.md`](reports/public_03_load.md)
+Detailed results: [Public 03 – Historical Load Processing](reports/public_03_load.md)
 
 ---
 
@@ -303,45 +307,19 @@ This confirms the tested code paths but does not establish full-scale performanc
 
 ---
 
-## Implementation Status
-
-| Capability | Status |
-|---|---|
-| HTTP Simulator Communication | Implemented |
-| Event Ingestion | Implemented |
-| SQLite Persistence | Implemented |
-| Processing Checkpoints | Implemented |
-| Duplicate Protection | Implemented |
-| Workflow Performance Analysis | Implemented |
-| Supervisor Configuration Change Observation | Implemented |
-| Caller-ID Anomaly Detection | Partially Implemented |
-| Governance-Aware Decision Handling | Partially Implemented |
 ## Further Development
 
 The system provides a foundation for workflow monitoring, performance analysis, and evidence-based decision-making.
 
 Future enhancements include:
 
-- Advanced caller-ID anomaly detection and remediation.
-- Stronger governance controls for configuration decisions.
-- Shared-cohort experimentation and workflow variant comparison.
-- Performance decay detection and automated rollback.
-- Centralized supervisor monitoring and dashboard capabilities.
-- Expanded validation across all twelve workflows.
-
-## Limitations and Future Improvements
-
-The current implementation provides a foundation for workflow monitoring, event processing, performance analysis, and evidence-based decision evaluation.
-
-Further development could focus on:
-
-1. **Advanced anomaly detection:** Expand detection coverage for caller-ID and other operational anomalies.
-2. **Decision governance:** Introduce more complete evidence requirements before approving configuration changes.
-3. **Performance decay detection:** Identify sustained decreases in workflow performance.
-4. **Automated rollback:** Add controlled configuration rollback when required.
-5. **Experimentation:** Implement shared-cohort experimentation and improved workflow variant comparisons.
-6. **Operational dashboard:** Provide a centralized view of workflow health and configuration activity.
-7. **Load validation:** Complete processing and performance validation across all twelve workflows.
+- **Advanced anomaly detection:** Expand caller-ID anomaly detection and operational monitoring.
+- **Decision governance:** Strengthen evidence requirements for configuration decisions.
+- **Shared-cohort experimentation:** Improve comparisons between workflow variants.
+- **Performance decay detection:** Identify sustained decreases in workflow performance.
+- **Automated rollback:** Introduce controlled configuration rollback when required.
+- **Operational dashboard:** Provide centralized visibility into workflow health and configuration activity.
+- **Load validation:** Complete processing and performance validation across all twelve workflows.
 
 ---
 
@@ -360,6 +338,6 @@ Additional technical details and execution results:
 
 Formi brings together workflow event ingestion, persistent storage, performance monitoring, operational signal detection, and evidence-based decision evaluation.
 
-The recorded results demonstrate event processing, metric tracking, operational monitoring, and audit recording across three scenarios. The documented limitations also identify areas requiring further development, including experimentation, automated remediation, rollback, and complete load validation.
+The recorded results demonstrate event processing, metric tracking, operational monitoring, and audit recording across three scenarios. The project also identifies opportunities to expand experimentation, operational automation, and large-scale workflow validation.
 
 **Built with Python, SQLite, HTTP APIs, Bash, and Pytest.**
